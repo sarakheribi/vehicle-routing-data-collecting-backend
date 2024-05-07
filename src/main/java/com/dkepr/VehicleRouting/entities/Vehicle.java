@@ -38,10 +38,6 @@ public class Vehicle {
         this.id = id;
     }
 
-
-
-
-
     public String getVehicleDescription() {
         return vehicleDescription;
     }
@@ -49,9 +45,6 @@ public class Vehicle {
     public void setVehicleDescription(String vehicleDescription) {
         this.vehicleDescription = vehicleDescription;
     }
-
-
-
 
 
     public boolean isCanTransportWheelchairs() {

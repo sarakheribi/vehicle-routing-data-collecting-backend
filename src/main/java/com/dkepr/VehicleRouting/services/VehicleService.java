@@ -14,6 +14,7 @@ public class VehicleService {
     private VehicleRepository repository;
 
     public Vehicle saveVehicle(Vehicle vehicle) {
+       //checking all requirements before saving into repository
        return repository.save(vehicle);
     }
 
