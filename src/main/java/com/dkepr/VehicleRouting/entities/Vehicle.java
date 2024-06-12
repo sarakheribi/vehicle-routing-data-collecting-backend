@@ -2,13 +2,21 @@ package com.dkepr.VehicleRouting.entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "VEHICLES")
 public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transport_provider_id")
+    private TransportProvider transportProvider;
 
     @Column(name = "VEHICLE_TYPE")
     private String vehicleType;
@@ -38,63 +46,6 @@ public class Vehicle {
         this.canTransportWheelchairs = canTransportWheelchairs;
         this.seatingPlaces = seatingPlaces;
         this.startCoordinate = startCoordinate;
-        this.endCoordinate = endCoordinate;
-    }
-
-    // Getters and setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getVehicleType() {
-        return vehicleType;
-    }
-
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
-    }
-
-    public String getVehicleDescription() {
-        return vehicleDescription;
-    }
-
-    public void setVehicleDescription(String vehicleDescription) {
-        this.vehicleDescription = vehicleDescription;
-    }
-
-    public boolean isCanTransportWheelchairs() {
-        return canTransportWheelchairs;
-    }
-
-    public void setCanTransportWheelchairs(boolean canTransportWheelchairs) {
-        this.canTransportWheelchairs = canTransportWheelchairs;
-    }
-
-    public int getSeatingPlaces() {
-        return seatingPlaces;
-    }
-
-    public void setSeatingPlaces(int seatingPlaces) {
-        this.seatingPlaces = seatingPlaces;
-    }
-
-    public String getStartCoordinate() {
-        return startCoordinate;
-    }
-
-    public void setStartCoordinate(String startCoordinate) {
-        this.startCoordinate = startCoordinate;
-    }
-
-    public String getEndCoordinate() {
-        return endCoordinate;
-    }
-
-    public void setEndCoordinate(String endCoordinate) {
         this.endCoordinate = endCoordinate;
     }
 }
