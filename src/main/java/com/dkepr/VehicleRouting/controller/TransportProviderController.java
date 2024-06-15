@@ -33,7 +33,10 @@ public class TransportProviderController {
         if (token == null) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(token);
+            String tokenJsonString = "{\"token\": \"" + token + "\"}";
+            return ResponseEntity.ok(
+                    tokenJsonString
+            );
         }
     }
 
