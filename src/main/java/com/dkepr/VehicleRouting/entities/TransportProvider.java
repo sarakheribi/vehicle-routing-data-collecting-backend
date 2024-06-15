@@ -32,6 +32,20 @@ public class TransportProvider implements UserDetails, Principal {
     @OneToOne(cascade = CascadeType.ALL)
     private Coordinates companyCoordinates;
 
+    public TransportProvider(String companyName, String username, String password, String review, Address companyAddress, Coordinates companyCoordinates) {
+        this.companyName = companyName;
+        this.username = username;
+        this.password = password;
+        this.review = review;
+        this.companyAddress = companyAddress;
+        this.companyCoordinates = companyCoordinates;
+    }
+    public TransportProvider(String companyName, String username, String password) {
+        this.companyName = companyName;
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList(); //TODO update
