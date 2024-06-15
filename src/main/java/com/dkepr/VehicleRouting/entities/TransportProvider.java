@@ -8,8 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,8 +31,6 @@ public class TransportProvider implements UserDetails, Principal {
     private Address companyAddress;
     @OneToOne(cascade = CascadeType.ALL)
     private Coordinates companyCoordinates;
-    @OneToMany(mappedBy = "transportProvider", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vehicle> vehicles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,17 +26,38 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(httpSecurityCorsConfigurer -> {
+                    httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
+                })
                 .authorizeHttpRequests(httpRequest -> {
-                    httpRequest.requestMatchers("/register", "/auth")
+                    httpRequest.requestMatchers("/register", "/auth")  //TODO:once all providers from central are registered, remove /register to prohibit a registration by user
                             .permitAll();
-                    httpRequest.requestMatchers(HttpMethod.POST)
-                            .hasAnyAuthority("ADMIN")
-                            .anyRequest()
-                            .authenticated();
+                    httpRequest.requestMatchers(HttpMethod.POST, "/addVehicle").authenticated()
+                            .requestMatchers(HttpMethod.POST, "/addVehicles").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/vehicles").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/vehicleById/{id}").authenticated()
+                            .requestMatchers(HttpMethod.PUT, "/updateVehicle").authenticated()
+                            .requestMatchers(HttpMethod.DELETE, "/deleteVehicle/{id}").authenticated()
+                            .anyRequest().permitAll();
+                /*    httpRequest.requestMatchers("/**")
+                            .authenticated()
+                            ;*/
                 }).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider);
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOriginPattern("*"); // Allow any origin
+        configuration.addAllowedMethod("*"); // Allow any method
+        configuration.addAllowedHeader("*"); // Allow any header
+        configuration.setAllowCredentials(true); // Allow credentials (optional, based on your requirements)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

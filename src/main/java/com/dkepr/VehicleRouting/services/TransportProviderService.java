@@ -6,6 +6,7 @@ import com.dkepr.VehicleRouting.entities.TransportProvider;
 import com.dkepr.VehicleRouting.repositories.TransportProviderRepository;
 import com.dkepr.VehicleRouting.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,7 +48,20 @@ public class TransportProviderService {
                 .review(null)
                 .companyAddress(null)
                 .companyCoordinates(null)
-                .vehicles(null)
                 .build();
+    }
+
+    public TransportProvider updateUser(TransportProvider updatedUser, String username) throws IllegalArgumentException {
+        TransportProvider existingUser = getUserFromRepository(username); //throws exception if not found
+        if(!updatedUser.getUsername().equals(username)){
+            System.out.println("You are not authorized to update another user.");
+            return null;
+        }
+        // Only update fields that are allowed to be updated
+        BeanUtils.copyProperties(updatedUser, existingUser,"username","accountLocked","id","enabled");
+        return userRepository.save(existingUser);
+    }
+    private TransportProvider getUserFromRepository(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
     }
 }
