@@ -1,7 +1,6 @@
 package com.dkepr.VehicleRouting.config;
 
-import com.dkepr.VehicleRouting.entities.TransportProvider;
-import com.dkepr.VehicleRouting.repositories.TransportProviderRepository;
+import com.dkepr.VehicleRouting.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class AppConfig implements CommandLineRunner {
 
-    private final TransportProviderRepository userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public RestTemplate restTemplate() {

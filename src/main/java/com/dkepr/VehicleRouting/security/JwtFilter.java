@@ -1,7 +1,6 @@
 package com.dkepr.VehicleRouting.security;
 
-import com.dkepr.VehicleRouting.entities.TransportProvider;
-import com.dkepr.VehicleRouting.security.JwtService;
+import com.dkepr.VehicleRouting.entities.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
         jwtToken = jwtToken.substring(7);
         String username = jwtService.extractSubject(jwtToken);
         if (username != null && jwtService.isTokenValid(jwtToken)) {
-            TransportProvider user = (TransportProvider) userDetailsService.loadUserByUsername(username);
+            User user = (User) userDetailsService.loadUserByUsername(username);
             var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             context.setAuthentication(authToken);

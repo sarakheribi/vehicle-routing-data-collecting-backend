@@ -1,88 +1,90 @@
 package com.dkepr.VehicleRouting.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.security.Principal;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Builder
 @Entity
-@Table(name = "TRANSPORT_PROVIDER")
-public class TransportProvider implements UserDetails, Principal {
+public class TransportProvider {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
+
     private String companyName;
-    @Column(unique = true)
-    private String username;
-    private String password;
-    private boolean accountLocked;
-    private boolean enabled;
+
     private String review;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Address companyAddress;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Coordinates companyCoordinates;
 
-    public TransportProvider(String companyName, String username, String password, String review, Address companyAddress, Coordinates companyCoordinates) {
+    public TransportProvider() {
+    }
+
+    public TransportProvider(String companyName, String review, Address companyAddress, Coordinates companyCoordinates) {
         this.companyName = companyName;
-        this.username = username;
-        this.password = password;
         this.review = review;
         this.companyAddress = companyAddress;
         this.companyCoordinates = companyCoordinates;
     }
-    public TransportProvider(String companyName, String username, String password) {
+
+    public TransportProvider(Integer id, String companyName, String review, Address companyAddress, Coordinates companyCoordinates) {
+        this.id = id;
         this.companyName = companyName;
-        this.username = username;
-        this.password = password;
+        this.review = review;
+        this.companyAddress = companyAddress;
+        this.companyCoordinates = companyCoordinates;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
+    }
+
+    public Address getCompanyAddress() {
+        return companyAddress;
+    }
+
+    public void setCompanyAddress(Address companyAddress) {
+        this.companyAddress = companyAddress;
+    }
+
+    public Coordinates getCompanyCoordinates() {
+        return companyCoordinates;
+    }
+
+    public void setCompanyCoordinates(Coordinates companyCoordinates) {
+        this.companyCoordinates = companyCoordinates;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); //TODO update
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !accountLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public String getName() {
-        return username;
+    public String toString() {
+        return "TransportProvider{" +
+                "id=" + id +
+                ", companyName='" + companyName + '\'' +
+                ", review='" + review + '\'' +
+                ", companyAddress=" + companyAddress +
+                ", companyCoordinates=" + companyCoordinates +
+                '}';
     }
 }

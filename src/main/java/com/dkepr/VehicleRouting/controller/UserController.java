@@ -2,8 +2,8 @@ package com.dkepr.VehicleRouting.controller;
 
 import com.dkepr.VehicleRouting.dto.AuthUser;
 import com.dkepr.VehicleRouting.dto.RegUser;
-import com.dkepr.VehicleRouting.entities.TransportProvider;
-import com.dkepr.VehicleRouting.services.TransportProviderService;
+import com.dkepr.VehicleRouting.entities.User;
+import com.dkepr.VehicleRouting.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-public class TransportProviderController {
+public class UserController {
 
-    private final TransportProviderService userService;
+    private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<TransportProvider> register(@RequestBody RegUser regUser) {
+    public ResponseEntity<User> register(@RequestBody RegUser regUser) {
         var user = userService.register(regUser);
         if(user != null){
             return ResponseEntity.ok(user);
@@ -40,16 +40,17 @@ public class TransportProviderController {
         }
     }
 
-    @PutMapping("/updateUser")
-    public ResponseEntity<TransportProvider> updateUser(@RequestBody TransportProvider user) {
+    //not required as task
+/*    @PutMapping("/updateUser")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         // Update the user details
-        TransportProvider updatedUser = userService.updateUser(user, user.getUsername());
+        User updatedUser = userService.updateUser(user, user.getUsername());
         if (updatedUser != null) {
             return ResponseEntity.ok(updatedUser);
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();

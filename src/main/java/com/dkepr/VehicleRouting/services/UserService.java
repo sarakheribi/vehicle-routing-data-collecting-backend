@@ -2,10 +2,9 @@ package com.dkepr.VehicleRouting.services;
 
 import com.dkepr.VehicleRouting.dto.AuthUser;
 import com.dkepr.VehicleRouting.dto.RegUser;
-import com.dkepr.VehicleRouting.entities.Address;
-import com.dkepr.VehicleRouting.entities.Coordinates;
 import com.dkepr.VehicleRouting.entities.TransportProvider;
-import com.dkepr.VehicleRouting.repositories.TransportProviderRepository;
+import com.dkepr.VehicleRouting.entities.User;
+import com.dkepr.VehicleRouting.repositories.UserRepository;
 import com.dkepr.VehicleRouting.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -25,24 +24,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TransportProviderService {
+public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
-    private final TransportProviderRepository userRepository;
-    private final String stammdatenServerUrl = "localhost:3308/stammdatenverwaltung/transportProvider"; // lauras be api
+    private final UserRepository userRepository;
+    private final String getTransportProviderRequest = "http://localhost:8082/transportProvider"; // lauras be api
     private final RestTemplate restTemplate;
 
 
-    public TransportProvider register(RegUser regUser) {
-        TransportProvider user = mapToUser(regUser);
+    public User register(RegUser regUser) {
+        User user = mapToUser(regUser);
         return userRepository.save(user);
     }
 
     public String auth(AuthUser authUser) {
-        TransportProvider user = (TransportProvider) userDetailsService.loadUserByUsername(authUser.getUsername());
+        User user = (User) userDetailsService.loadUserByUsername(authUser.getUsername());
         if (user == null) {
             return null;
         }
@@ -50,38 +49,35 @@ public class TransportProviderService {
         return jwtService.generateJwtToken(authUser.getUsername());
     }
 
-    private TransportProvider mapToUser(RegUser regUser) {
-        return TransportProvider.builder()
+    private User mapToUser(RegUser regUser) {
+        return User.builder()
                 .username(regUser.getUsername())
-                .companyName(regUser.getCompanyName())
                 .password(passwordEncoder.encode(regUser.getPassword()))
                 .accountLocked(false)
                 .enabled(true)
-                .review(null)
-                .companyAddress(null)
-                .companyCoordinates(null)
                 .build();
     }
 
-    public TransportProvider updateUser(TransportProvider updatedUser, String username) throws IllegalArgumentException {
-        TransportProvider existingUser = getUserFromRepository(username); //throws exception if not found
+    // not required as task
+/*    public User updateUser(User updatedUser, String username) throws IllegalArgumentException {
+        User existingUser = getUserFromRepository(username); //throws exception if not found
         if (!updatedUser.getUsername().equals(username)) {
             System.out.println("You are not authorized to update another user.");
             return null;
         }
         // Only update fields that are allowed to be updated
-        BeanUtils.copyProperties(updatedUser, existingUser, "username", "accountLocked", "id", "enabled");
+        BeanUtils.copyProperties(updatedUser, existingUser, "accountLocked", "id", "enabled");
         return userRepository.save(existingUser);
-    }
+    }*/
 
-    private TransportProvider getUserFromRepository(String username) {
+    private User getUserFromRepository(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
     }
 
     public List<TransportProvider> fetchTransportProviders() {
         try {
             ResponseEntity<List<TransportProvider>> responseEntity = restTemplate.exchange(
-                    stammdatenServerUrl,
+                    getTransportProviderRequest,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<TransportProvider>>() {
@@ -89,7 +85,7 @@ public class TransportProviderService {
             );
             return responseEntity.getBody();
         }catch (Exception e){
-            System.out.println("Problem occured when trying to import transport providers");
+            System.out.println("Problem occurred when trying to import transport providers");
             return List.of();
         }
     }
@@ -101,31 +97,34 @@ public class TransportProviderService {
             //add your own test users
             userRepository.saveAll(testUsers);
         }else{
-            userRepository.saveAll(transportProviders);
+           List<User> users =  transportProviders.stream().map(p -> {
+               var username = p.getCompanyName().replace(" ","").toLowerCase();
+                User user = new User(username,passwordEncoder.encode(username));
+                user.setAccountLocked(false);
+                user.setEnabled(true);
+                return user;
+            }).toList();
+            try{//TODO do a better fix for this
+                userRepository.saveAll(users);
+            }catch (Exception e){
+                System.out.println("Transport providers are already imported as users.");
+            }
         }
     }
 
-    private List<TransportProvider> getTestUsers() {
-        List<TransportProvider> list = new ArrayList<>();
-        var lili = TransportProvider.builder()
+    private List<User> getTestUsers() {
+        List<User> list = new ArrayList<>();
+        var lili = User.builder()
                 .username("lili")
-                .companyName("Lili Transport Gmbh")
                 .password(passwordEncoder.encode("lili"))
                 .accountLocked(false)
                 .enabled(true)
-                .review("very good")
-                .companyAddress(null)
-                .companyCoordinates(null)
                 .build();
-        var milo = TransportProvider.builder()
+        var milo = User.builder()
                 .username("milo")
-                .companyName("Transport Milo Gmbh")
                 .password(passwordEncoder.encode("milo"))
                 .accountLocked(false)
                 .enabled(true)
-                .review("good")
-                .companyAddress(null)
-                .companyCoordinates(null)
                 .build();
         if(userRepository.findByUsername("lili").isEmpty()){
             list.add(lili);

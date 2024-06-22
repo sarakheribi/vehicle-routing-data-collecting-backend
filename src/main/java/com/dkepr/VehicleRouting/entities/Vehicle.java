@@ -19,8 +19,8 @@ public class Vehicle {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "transport_provider_id")
-    private TransportProvider transportProvider;
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @Column(name = "COMPANY_NAME")
     private String companyName;
@@ -38,8 +38,8 @@ public class Vehicle {
     private int seatingPlaces;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Coordinates startCoordinate;
+    private Address startCoordinate;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Coordinates endCoordinate;
+    private Address endCoordinate;
 }
