@@ -30,13 +30,13 @@ public class SecurityConfig {
                     httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
                 })
                 .authorizeHttpRequests(httpRequest -> {
-                    httpRequest.requestMatchers("/register", "/auth")  //TODO:once all providers from central are registered, remove /register to prohibit a registration by user
+                    httpRequest.requestMatchers("/auth", "/vehiclesByTransportProviderId/")
                             .permitAll();
+
                     httpRequest.requestMatchers(HttpMethod.POST, "/addVehicle").authenticated()
                             .requestMatchers(HttpMethod.POST, "/addVehicles").authenticated()
                             .requestMatchers(HttpMethod.GET, "/vehicles").authenticated()
                             .requestMatchers(HttpMethod.GET, "/vehicleById/{id}").authenticated()
-                            .requestMatchers(HttpMethod.PUT, "/updateVehicle").authenticated()
                             .requestMatchers(HttpMethod.DELETE, "/deleteVehicle/{id}").authenticated()
                             .anyRequest().permitAll();
                 /*    httpRequest.requestMatchers("/**")

@@ -18,15 +18,17 @@ import java.security.Principal;
 @Table(name = "TRANSPORT_USER")
 public class User implements UserDetails, Principal {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(unique = true)
     private String username;
     private String password;
     private boolean accountLocked;
     private boolean enabled;
 
-    public User(String username, String password) {
+    public User(int id,String username, String password) {
+        this.id = id;
         this.username = username;
         this.password = password;
     }
@@ -70,4 +72,5 @@ public class User implements UserDetails, Principal {
     public String getName() {
         return username;
     }
+
 }

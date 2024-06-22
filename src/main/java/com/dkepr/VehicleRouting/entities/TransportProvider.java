@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 @Entity
 public class TransportProvider {
-
     @Id
     @GeneratedValue
     private Integer id;

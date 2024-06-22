@@ -15,11 +15,15 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
+    @Autowired
+    private VehicleService invoiceService;
 
     @PostMapping("/addVehicle")
     public ResponseEntity<Vehicle> addVehicle(@RequestBody Vehicle vehicle) {
         var addedVehicle = vehicleService.saveVehicle(vehicle, getCurrentUsername());
         if (addedVehicle != null) {
+            //TODO also create invoice for this added vehicle
+
             return ResponseEntity.ok(addedVehicle);
         } else {
             return ResponseEntity.badRequest().build();
@@ -39,6 +43,16 @@ public class VehicleController {
     @GetMapping("/vehicles")
     public ResponseEntity<List<Vehicle>> findAllVehicles() {
         var vehicles = vehicleService.getVehicles(getCurrentUsername());
+        if (vehicles != null) {
+            return ResponseEntity.ok(vehicles);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/vehiclesByTransportProviderId/{id}")
+    public ResponseEntity<List<Vehicle>> findAllVehiclesByUserId(@PathVariable int id) {
+        var vehicles = vehicleService.getVehiclesByTransportProviderId(id);
         if (vehicles != null) {
             return ResponseEntity.ok(vehicles);
         } else {

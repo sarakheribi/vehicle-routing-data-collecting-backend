@@ -36,6 +36,18 @@ public class VehicleService {
         return filterVehiclesByUsername(username);
     }
 
+    //transportProviderId is the same as user id
+    public List<Vehicle> getVehiclesByTransportProviderId(int id) {
+        List<Vehicle> vehicles = new ArrayList<>();
+         repository.findAll().forEach(v -> {
+            if(v.getUser().getId() == id){
+                vehicles.add(v);
+            }
+        });
+
+        return vehicles;
+    }
+
     public Vehicle getVehicle(int id, String username) {
         getUserFromRepository(username);
         var vehicle = repository.findById(id).orElse(null);

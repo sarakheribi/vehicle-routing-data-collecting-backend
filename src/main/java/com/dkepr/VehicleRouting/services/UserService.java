@@ -99,14 +99,15 @@ public class UserService {
         }else{
            List<User> users =  transportProviders.stream().map(p -> {
                var username = p.getCompanyName().replace(" ","").toLowerCase();
-                User user = new User(username,passwordEncoder.encode(username));
+                User user = new User(p.getId(),username,passwordEncoder.encode(username));
                 user.setAccountLocked(false);
                 user.setEnabled(true);
                 return user;
             }).toList();
-            try{//TODO do a better fix for this
+            try{
                 userRepository.saveAll(users);
             }catch (Exception e){
+                //ignore if users already exist in db
                 System.out.println("Transport providers are already imported as users.");
             }
         }
