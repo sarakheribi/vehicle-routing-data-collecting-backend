@@ -31,7 +31,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
-    private final String getTransportProviderRequest = "http://localhost:8082/transportProvider"; // lauras be api
+    private final String getTransportProviderRequest = "http://localhost:8082/transportProvider"; // lauras BE api
     private final RestTemplate restTemplate;
 
 
@@ -94,9 +94,10 @@ public class UserService {
         var testUsers = getTestUsers();
         List<TransportProvider> transportProviders = fetchTransportProviders();
         if (transportProviders == null || transportProviders.isEmpty()) {
-            //add your own test users
+            //add your own test users, if there were no transport providers fetched
             userRepository.saveAll(testUsers);
         }else{
+            //otherwise, try to create users for all fetched providers
            List<User> users =  transportProviders.stream().map(p -> {
                var username = p.getCompanyName().replace(" ","").toLowerCase();
                 User user = new User(p.getId(),username,passwordEncoder.encode(username));
@@ -104,6 +105,7 @@ public class UserService {
                 user.setEnabled(true);
                 return user;
             }).toList();
+
             try{
                 userRepository.saveAll(users);
             }catch (Exception e){
