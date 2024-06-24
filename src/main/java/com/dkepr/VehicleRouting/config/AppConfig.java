@@ -52,13 +52,5 @@ public class AppConfig implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-/*        TransportProvider user = TransportProvider.builder()
-                .firstname("Iocode Firstname")
-                .lastname("Iocode Lastname")
-                .username("Iocode@gmail.com")
-                .password(passwordEncoder().encode("iocode"))
-                .roles(List.of(Role.ADMIN.name(), Role.USER.name()))
-                .build();
-        userRepository.save(user);*/
     }
 }
