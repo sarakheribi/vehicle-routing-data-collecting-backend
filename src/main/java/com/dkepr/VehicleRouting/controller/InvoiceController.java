@@ -46,6 +46,20 @@ public class InvoiceController {
         }
     }
 
+    //returns invoice for given vehicle and if not existing yet, we calculate and save it
+    @GetMapping("/invoicesByVehicle/{vehicleId}")
+    public ResponseEntity<Invoice> findInvoiceByVehicleId(@PathVariable int vehicleId) {
+        var invoice = invoiceService.getVehicleInvoice(vehicleId);
+        if (invoice != null) {
+            return ResponseEntity.ok(invoice);
+        } else {
+            var calculatedInvoice = invoiceService.calculateAndSaveInvoice(vehicleId);
+
+            return calculatedInvoice != null ? ResponseEntity.ok(calculatedInvoice):
+                    ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/invoices/{id}")
     public ResponseEntity<Invoice> findInvoiceById(@PathVariable int id) {
         var invoice = invoiceService.getInvoice(id);

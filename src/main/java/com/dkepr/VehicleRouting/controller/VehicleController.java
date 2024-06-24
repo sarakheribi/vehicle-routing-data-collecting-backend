@@ -15,15 +15,11 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
-    @Autowired
-    private VehicleService invoiceService;
 
     @PostMapping("/addVehicle")
     public ResponseEntity<Vehicle> addVehicle(@RequestBody Vehicle vehicle) {
         var addedVehicle = vehicleService.saveVehicle(vehicle, getCurrentUsername());
         if (addedVehicle != null) {
-            //TODO also create invoice for this added vehicle
-
             return ResponseEntity.ok(addedVehicle);
         } else {
             return ResponseEntity.badRequest().build();
